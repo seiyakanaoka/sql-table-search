@@ -1,5 +1,4 @@
 import re
-import sys
 
 DATA_TYPE_LIST = [
     "VARCHAR",
