@@ -1,4 +1,5 @@
 import re
+import sys
 
 DATA_TYPE_LIST = [
     "VARCHAR",
@@ -77,3 +78,4 @@ print(f"> {name_list}")
 print(" ")
 print("【型定義】")
 print(f"> {type_list}")
+print(" ")

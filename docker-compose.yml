@@ -1,0 +1,12 @@
+# docker-compose.yml
+version: '3'
+services:
+  python_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/src
+    stdin_open: true
+    tty: true # TTY を有効にします
+    command: python3 ./app.py
