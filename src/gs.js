@@ -1,14 +1,12 @@
 // カラムの整形
 function formatColumns(columnValues) {
-  var columnList = columnValues.filter((column) => column !== '');
-  return columnList
-    .map((value, i) => {
-      if (i === 0) {
-        return `${value}`;
-      }
-      return ` ${value}`;
-    })
-    .join(',');
+  var columnList = columnValues.filter((column) => column !== '')
+  return columnList.map((value, i) => {
+    if (i === 0) {
+      return `${value}`;
+    }
+    return ` ${value}`
+  }).join(',')
 }
 
 function isString(value) {
@@ -25,13 +23,13 @@ function isString(value) {
     'TIME',
     'DATETIME',
     'TIMESTAMP',
-    'YEAR',
+    'YEAR'
   ];
   for (let i = 0; i < srtringTypeList.length; i++) {
-    if (value.includes(srtringTypeList[i])) {
-      return true;
+        if (value.includes(srtringTypeList[i])) {
+            return true;
+        }
     }
-  }
   return false;
 }
 
@@ -44,18 +42,18 @@ function isInt(value) {
     'BIGINT',
     'FLOAT',
     'DOUBLE',
-    'DECIMAL',
+    'DECIMAL'
   ];
   for (let i = 0; i < intTypeList.length; i++) {
-    if (value.includes(intTypeList[i])) {
-      return true;
+        if (value.includes(intTypeList[i])) {
+            return true;
+        }
     }
-  }
   return false;
 }
 
 function isBoolean(value) {
-  if (value.includes('BOOLEAN')) {
+  if(value.includes('BOOLEAN')) {
     return true;
   }
   return false;
@@ -63,14 +61,14 @@ function isBoolean(value) {
 
 // 型チェック
 function typeCheck(value, type) {
-  if (value.toString().toUpperCase() === 'NULL') {
+  if(value.toString().toUpperCase() === 'NULL') {
     return 'NULL';
   }
-  if (isString(type)) {
+  if(isString(type)) {
     // ハイフンの場合は、シングルクォートのみの空文字を返す
-    console.log('value1 : ', value);
-    if (value === '-') {
-      console.log('value2 : ', value);
+    console.log('value1 : ', value)
+    if(value === '-') {
+      console.log('value2 : ', value)
       return `''`;
     }
     return `'${value}'`;
@@ -87,24 +85,24 @@ function typeCheck(value, type) {
 // データの取得
 function getInsertValues(dataValues, types) {
   var result = dataValues.map((dataValue, firstIndex) => {
-    var dataList = dataValue.filter((data) => data !== '');
+    var dataList = dataValue.filter((data) => data !== '')
     var formatValues = dataList.map((data, secondIndex) => {
-      var type = types[secondIndex];
+      var type = types[secondIndex]
       if (secondIndex === 0) {
         return typeCheck(data, type);
       }
       // 2つ目以降の値は、値の前に空白をつける
-      return ` ${typeCheck(data, type)}`;
+      return ` ${typeCheck(data, type)}`
     });
 
     // 文字列に変換
     var result = formatValues.join(',');
 
     if (firstIndex === 0) {
-      return `(${result})`;
+      return `(${result})`
     }
     // 2つ目以降の値は、値の前に空白をつける
-    return ` (${result})`;
+    return ` (${result})`
   });
 
   // 文字列に変換して返す
@@ -113,7 +111,7 @@ function getInsertValues(dataValues, types) {
 
 function myFunction() {
   var spreadSheet = SpreadsheetApp.getActiveSpreadsheet();
-  var activeSheet = spreadSheet.getActiveSheet();
+  var activeSheet = spreadSheet.getActiveSheet()
 
   // テーブル名の取得
   var tableName = activeSheet.getRange('C13').getValue();
@@ -123,28 +121,24 @@ function myFunction() {
 
   // カラムの値を取得
   var columnValues = activeSheet.getRange(15, 3, 1, lastColumn).getValues()[0];
-
+  
   var columns = formatColumns(columnValues);
 
   // 型定義を取得
   var typeValues = activeSheet.getRange(16, 3, 1, lastColumn).getValues()[0];
 
-  var types = typeValues.filter((value) => {
+  var types =  typeValues.filter((value) => {
     return value !== '';
   });
 
   // データが入っている最終行を取得
-  var lastRow = activeSheet.getLastRow();
-  var dataValues = activeSheet
-    .getRange(17, 3, lastRow - 16, lastColumn)
-    .getValues();
+  var lastRow = activeSheet.getLastRow()
+  var dataValues = activeSheet.getRange(17, 3, lastRow - 16, lastColumn).getValues();
 
   // データの取得
   var insertValues = getInsertValues(dataValues, types);
-
-  var format = [
-    [`INSERT INTO ${tableName} (${columns}) VALUES ${insertValues};`],
-  ];
+  
+  var format = [[`INSERT INTO ${tableName} (${columns}) VALUES ${insertValues};`]]
 
   activeSheet.getRange('E4').setValues(format);
 }
