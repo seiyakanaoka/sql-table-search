@@ -66,9 +66,7 @@ function typeCheck(value, type) {
   }
   if(isString(type)) {
     // ハイフンの場合は、シングルクォートのみの空文字を返す
-    console.log('value1 : ', value)
     if(value === '-') {
-      console.log('value2 : ', value)
       return `''`;
     }
     return `'${value}'`;
